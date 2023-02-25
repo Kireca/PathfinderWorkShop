@@ -1,4 +1,4 @@
-package bg.softuni.pathfinderworkshop.model.enums;
+package bg.softuni.pathfinderworkshop.models.enums;
 
 public enum LevelEnum {
 

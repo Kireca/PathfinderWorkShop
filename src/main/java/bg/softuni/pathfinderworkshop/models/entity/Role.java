@@ -1,7 +1,7 @@
-package bg.softuni.pathfinderworkshop.model.entity;
+package bg.softuni.pathfinderworkshop.models.entity;
 
 
-import bg.softuni.pathfinderworkshop.model.enums.RoleNameEnum;
+import bg.softuni.pathfinderworkshop.models.enums.RoleNameEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,7 +20,7 @@ public class Role extends BaseEntity {
 
 
     @Enumerated(EnumType.STRING)
-    private RoleNameEnum name;
+    private RoleNameEnum role;
 
 
 

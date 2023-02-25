@@ -1,4 +1,4 @@
-package bg.softuni.pathfinderworkshop.model.entity;
+package bg.softuni.pathfinderworkshop.models.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
