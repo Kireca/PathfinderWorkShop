@@ -1,17 +1,17 @@
 package bg.softuni.pathfinderworkshop.web;
 
+import bg.softuni.pathfinderworkshop.models.binding.UserLoginDTO;
 import bg.softuni.pathfinderworkshop.models.binding.UserRegisterDTO;
 import bg.softuni.pathfinderworkshop.models.service.UserServiceDTO;
+import bg.softuni.pathfinderworkshop.models.view.UserViewModel;
 import bg.softuni.pathfinderworkshop.services.UserService;
+import bg.softuni.pathfinderworkshop.utils.CurrentUser;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,6 +32,11 @@ public class UserController {
         return new UserRegisterDTO();
     }
 
+    @ModelAttribute
+    public UserLoginDTO userLoginDTO() {
+        return new UserLoginDTO();
+    }
+
     @GetMapping("/register")
     public String register(Model model) {
         return "register";
@@ -49,16 +54,65 @@ public class UserController {
         }
 
         userService.registerUser(modelMapper
-                .map(userRegisterDTO,UserServiceDTO.class));
+                .map(userRegisterDTO, UserServiceDTO.class));
 
 
         return "redirect:/users/login";
     }
 
 
-
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        model.addAttribute("isNotExists", false);
         return "login";
     }
+
+    @PostMapping("/login")
+    public String loginConfirm(@Valid UserLoginDTO userLoginDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes
+                    .addFlashAttribute("userLoginDTO", userLoginDTO)
+                    .addFlashAttribute("org.springframework.validation.BindingResult,userLoginDTO", bindingResult);
+
+            return "redirect:/users/login";
+        }
+
+        UserServiceDTO user = userService
+                .findUserByUsernameAndPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword());
+
+        if (user == null) {
+
+            redirectAttributes
+                    .addFlashAttribute("doNotExists", true)
+                    .addFlashAttribute("userLoginDTO", userLoginDTO)
+                    .addFlashAttribute("org.springframework.validation.BindingResult,userLoginDTO", bindingResult);
+
+            return "redirect:/users/login";
+
+        }
+
+        userService.loginUser(user.getId(), user.getUsername());
+
+        return "redirect:/";
+
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        userService.logout();
+        return "redirect:/home";
+    }
+
+
+    @GetMapping("/profile/{id}")
+    private String profile(@PathVariable Long id, Model model) {
+        model.addAttribute("user", modelMapper
+                .map(userService.findById(id), UserViewModel.class));
+
+
+        return "profile";
+    }
+
+
 }
