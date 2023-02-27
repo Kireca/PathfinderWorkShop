@@ -22,6 +22,7 @@ VALUES (3, 30, 'User Userov', 'BEGINNER', '12345', 'user');
 INSERT INTO users (id, age, full_name, level, password, username)
 VALUES (4, 33, 'Ivan Ivanov', 'BEGINNER', '12345', 'ivan');
 -- user roles
+
 -- admin
 INSERT INTO users_roles (`user_id`, `roles_id`)
 VALUES (1, 1);

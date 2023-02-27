@@ -101,7 +101,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout() {
         userService.logout();
-        return "redirect:/home";
+        return "redirect:/";
     }
 
 
