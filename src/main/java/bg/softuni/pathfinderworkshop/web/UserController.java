@@ -4,6 +4,7 @@ import bg.softuni.pathfinderworkshop.models.binding.UserLoginDTO;
 import bg.softuni.pathfinderworkshop.models.binding.UserRegisterDTO;
 import bg.softuni.pathfinderworkshop.models.service.UserServiceDTO;
 import bg.softuni.pathfinderworkshop.models.view.UserViewModel;
+import bg.softuni.pathfinderworkshop.repositories.UserRepository;
 import bg.softuni.pathfinderworkshop.services.UserService;
 import bg.softuni.pathfinderworkshop.utils.CurrentUser;
 import jakarta.validation.Valid;
@@ -21,10 +22,13 @@ public class UserController {
 
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService, ModelMapper modelMapper,
+                          UserRepository userRepository) {
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
     @ModelAttribute
@@ -51,6 +55,13 @@ public class UserController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterDTO", bindingResult);
 
             return "redirect:/users/register";
+        }
+
+        boolean isNameExists = userRepository.findByUsername(userRegisterDTO.getUsername()).isPresent();
+
+
+        if (isNameExists) {
+            //TODO... redirect with message
         }
 
         userService.registerUser(modelMapper
@@ -104,12 +115,10 @@ public class UserController {
         return "redirect:/";
     }
 
-
     @GetMapping("/profile/{id}")
     private String profile(@PathVariable Long id, Model model) {
         model.addAttribute("user", modelMapper
                 .map(userService.findById(id), UserViewModel.class));
-
 
         return "profile";
     }

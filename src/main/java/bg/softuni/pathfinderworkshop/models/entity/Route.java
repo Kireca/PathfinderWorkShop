@@ -35,7 +35,10 @@ public class Route extends BaseEntity {
     @Column(name = "video_url")
     private String videoURL;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "route",fetch = FetchType.EAGER)
+    private Set<Picture> pictures;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Category> categories;
 
 }

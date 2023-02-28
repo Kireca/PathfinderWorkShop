@@ -8,6 +8,8 @@ import bg.softuni.pathfinderworkshop.utils.CurrentUser;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -53,4 +55,5 @@ public class UserService {
                 .map(user -> modelMapper.map(user, UserServiceDTO.class))
                 .orElse(null);
     }
+
 }
